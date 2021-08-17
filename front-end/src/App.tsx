@@ -2,16 +2,18 @@ import "./App.css";
 import React from "react";
 import { useState, useEffect } from "react";
 import getTracks from "./API";
+import { TrackData } from "./API";
 require("dotenv").config();
 
 const App: React.FC = () => {
   const query = new URLSearchParams(window.location.search);
   const access_token = query.get("access_token");
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<TrackData[]>([]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("HELLO");
     const searchRes = getTracks(searchTerm, access_token);
     searchRes.then((tracks) => setSearchResults(tracks));
   };
@@ -38,6 +40,7 @@ const App: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => {
+              setSearchResults([]);
               setSearchTerm(e.target.value);
             }}
           />
@@ -48,7 +51,17 @@ const App: React.FC = () => {
         <ul>
           {searchResults.map((track) => {
             const key = new Date().getTime().toString();
-            return <p key={key}>{track}</p>;
+            return (
+              <div key={track.id}>
+                <img src={track.image} />
+                <p>
+                  <h3>
+                    {track.trackName} by {track.artist}, release date:
+                    {track.date}
+                  </h3>
+                </p>
+              </div>
+            );
           })}
         </ul>
       )}
