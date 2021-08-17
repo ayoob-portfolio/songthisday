@@ -5,6 +5,13 @@ import { Song } from "./Song";
 require("dotenv").config();
 
 const App: React.FC = () => {
+  const query = new URLSearchParams(window.location.search);
+  const acess_token = query.get("access_token");
+
+  useEffect(() => {
+    console.log(acess_token);
+  }, []);
+
   return (
     <div>
       <button
