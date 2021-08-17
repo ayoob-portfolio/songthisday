@@ -24,7 +24,6 @@ async function getTracks(
       for (let i = 0; i < 20; i++) {
         track = trackList[i];
         let artist = track.album.artists[0].name;
-        console.log(artist);
         if (!seenArtists.has(artist)) {
           seenArtists.add(artist);
           res.push(track.name + " by " + artist);
