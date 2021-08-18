@@ -3,6 +3,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import getTracks from "./API";
 import { TrackData } from "./API";
+import ChooseTrack from "./Componenets/ChooseTrack";
 require("dotenv").config();
 
 const Home: React.FC = () => {
@@ -15,7 +16,10 @@ const Home: React.FC = () => {
     e.preventDefault();
     console.log("HELLO");
     const searchRes = getTracks(searchTerm, access_token);
-    searchRes.then((tracks) => setSearchResults(tracks));
+    searchRes.then((tracks) => {
+      setSearchResults(tracks);
+      console.log(tracks);
+    });
   };
 
   useEffect(() => {
@@ -52,15 +56,11 @@ const Home: React.FC = () => {
           {searchResults.map((track) => {
             const key = new Date().getTime().toString();
             return (
-              <div key={track.id}>
-                <img src={track.image} />
-                <p>
-                  <h3>
-                    {track.trackName} by {track.artist}, release date:
-                    {track.date}
-                  </h3>
-                </p>
-              </div>
+              <ChooseTrack
+                key={key}
+                track={track}
+                access_token={access_token}
+              />
             );
           })}
         </ul>
