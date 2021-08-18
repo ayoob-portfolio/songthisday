@@ -84,7 +84,7 @@ export async function getTrack(
     })
     .then((track) => {
       const name = track.name;
-      const image = track.album.images[1].url;
+      const image = track.album.images[0].url;
       const artist = track.album.artists[0].name;
       const date = track.album.release_date;
       res = {
