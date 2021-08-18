@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const SPOTIFY_SEARCH_ENDPOINT = "https://api.spotify.com/v1/search";
+const SPOTIFY_SEARCH_ENDPOINT = "https://api.spotify.com/v1";
 
 export interface TrackData {
   trackName: string;
@@ -18,7 +18,7 @@ async function getTracks(
   const res: TrackData[] = [];
 
   const resp = await axios
-    .get(SPOTIFY_SEARCH_ENDPOINT + "?q=" + name + "&type=track", {
+    .get(SPOTIFY_SEARCH_ENDPOINT + "/search?q=" + name + "&type=track", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + access_token,
@@ -47,8 +47,55 @@ async function getTracks(
       }
     })
     .catch(() => {
-      return ["None"];
+      res.push({
+        trackName: "NONE",
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.AQIbtt2CgLi6nTHo4qBZ9QAAAA%26pid%3DApi&f=1",
+        artist: "Your mum",
+        id: "1232434532",
+        date: "12-12-2001",
+      });
     });
+
+  return res;
+}
+
+export async function getTrack(
+  id: string,
+  access_token: string
+): Promise<TrackData> {
+  let res: TrackData = {
+    trackName: "",
+    image: "",
+    artist: "",
+    date: "",
+    id: "",
+  };
+
+  const resp = await axios
+    .get(SPOTIFY_SEARCH_ENDPOINT + "/tracks/" + id, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + access_token,
+      },
+    })
+    .then((resp) => {
+      return resp.data;
+    })
+    .then((track) => {
+      const name = track.name;
+      const image = track.album.images[1].url;
+      const artist = track.album.artists[0].name;
+      const date = track.album.release_date;
+      res = {
+        trackName: name,
+        image: image,
+        artist: artist,
+        date: date,
+        id: id,
+      };
+    })
+    .catch(() => {});
 
   return res;
 }
