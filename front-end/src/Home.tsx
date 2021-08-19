@@ -29,14 +29,9 @@ const Home: React.FC = () => {
   return (
     <div>
       {!access_token && (
-        <button
-          onClick={() =>
-            (window.location.href =
-              process.env.REACT_APP_BACKEND_ADDR + "/login")
-          }
-        >
-          LOGIN TO SPOTIFY
-        </button>
+        <a href={process.env.REACT_APP_BACKEND_ADDR + "/login"}>
+          <button>LOGIN TO SPOTIFY</button>
+        </a>
       )}
       <div>
         <form onSubmit={handleSubmit}>
