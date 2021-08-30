@@ -1,7 +1,7 @@
 import "./App.css";
 import React from "react";
 import { useState, useEffect } from "react";
-import getTracks from "./API";
+import { getTracks, getName } from "./API";
 import { TrackData } from "./API";
 import ChooseTrack from "./Componenets/ChooseTrack";
 require("dotenv").config();
