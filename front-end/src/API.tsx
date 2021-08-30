@@ -10,7 +10,7 @@ export interface TrackData {
   id: string;
 }
 
-async function getTracks(
+export async function getTracks(
   name: string,
   access_token: string | null
 ): Promise<TrackData[]> {
@@ -100,4 +100,20 @@ export async function getTrack(
   return res;
 }
 
-export default getTracks;
+export async function getName(access_token: String | null): Promise<String> {
+  const resp = await axios
+    .get(SPOTIFY_SEARCH_ENDPOINT + "/me", {
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    })
+    .then((resp) => {
+      const data = resp.data;
+      return data.display_name;
+    })
+    .catch((err) => {
+      console.log(err);
+      return "Err";
+    });
+  return "HI";
+}
