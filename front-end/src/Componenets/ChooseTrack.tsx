@@ -19,7 +19,7 @@ const ChooseTrack: React.FC<Props> = (props) => {
         history.push("track/?access_token=" + access_token + "&id=" + track.id);
       }}
     >
-      <img src={track.image} />
+      <img alt="Album art" src={track.image} />
       <p>
         <h3>
           {track.trackName} by {track.artist}, release date:

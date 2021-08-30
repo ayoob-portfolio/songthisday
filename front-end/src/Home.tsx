@@ -1,8 +1,7 @@
 import "./App.css";
 import React from "react";
 import { useState, useEffect } from "react";
-import { getTracks, getName } from "./API";
-import { TrackData } from "./API";
+import { getTracks, getName, TrackData } from "./API";
 import ChooseTrack from "./Componenets/ChooseTrack";
 require("dotenv").config();
 
@@ -11,6 +10,7 @@ const Home: React.FC = () => {
   const access_token = query.get("access_token");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<TrackData[]>([]);
+  const [name, setName] = useState<String>("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,6 +24,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     console.log(access_token);
+    getName(access_token).then((res) => setName(res));
   }, [access_token]);
 
   return (
@@ -43,6 +44,7 @@ const Home: React.FC = () => {
               setSearchTerm(e.target.value);
             }}
           />
+          <h1>{name}</h1>
           <button type="submit">Look Up</button>
         </form>
       </div>

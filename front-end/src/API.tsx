@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const SPOTIFY_SEARCH_ENDPOINT = "https://api.spotify.com/v1";
+const WIKIMEDIA_SEARCH_ENDPOINT =
+  "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all";
 
 export interface TrackData {
   trackName: string;
@@ -10,6 +12,13 @@ export interface TrackData {
   id: string;
 }
 
+export interface EventData {
+  type: string;
+  url: string;
+  text: string;
+  year: string;
+}
+
 export async function getTracks(
   name: string,
   access_token: string | null
@@ -17,7 +26,7 @@ export async function getTracks(
   const seenArtists = new Set();
   const res: TrackData[] = [];
 
-  const resp = await axios
+  await axios
     .get(SPOTIFY_SEARCH_ENDPOINT + "/search?q=" + name + "&type=track", {
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +81,7 @@ export async function getTrack(
     id: "",
   };
 
-  const resp = await axios
+  await axios
     .get(SPOTIFY_SEARCH_ENDPOINT + "/tracks/" + id, {
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +110,8 @@ export async function getTrack(
 }
 
 export async function getName(access_token: String | null): Promise<String> {
-  const resp = await axios
+  let res = "";
+  await axios
     .get(SPOTIFY_SEARCH_ENDPOINT + "/me", {
       headers: {
         Authorization: "Bearer " + access_token,
@@ -109,11 +119,68 @@ export async function getName(access_token: String | null): Promise<String> {
     })
     .then((resp) => {
       const data = resp.data;
-      return data.display_name;
+      console.log(data.display_name);
+      res = data.display_name;
     })
     .catch((err) => {
       console.log(err);
-      return "Err";
+      res = "Err";
     });
-  return "HI";
+  return res;
+}
+
+export async function getEvents(
+  day: string,
+  month: string
+): Promise<EventData[]> {
+  const url = WIKIMEDIA_SEARCH_ENDPOINT + "/" + month + "/" + day;
+  console.log("URL IS ", url);
+  const res: EventData[] = [];
+
+  await axios
+    .get(url)
+    .then((resp) => {
+      const { selected, births, deaths, events } = resp.data;
+      fillEvents(res, selected, births, events, deaths);
+    })
+    .catch((err) => {
+      console.log(err);
+      const errEvent: EventData = {
+        type: "ERR",
+        url: "ERR",
+        year: "ERR",
+        text: "ERR",
+      };
+      res.push(errEvent);
+    });
+
+  return res;
+}
+
+function fillEvents(
+  res: EventData[],
+  selected: any[],
+  births: any[],
+  events: any[],
+  deaths: any[]
+): void {
+  addItems(res, "selected", selected);
+  addItems(res, "births", births);
+  addItems(res, "events", events);
+  addItems(res, "deaths", deaths);
+}
+
+function addItems(res: EventData[], type: string, events: any[]) {
+  events.forEach((event) => {
+    console.log(event);
+    const { year, text } = event;
+    const url = event.pages[0].content_urls.desktop.page;
+    const newEvent: EventData = {
+      type: type,
+      year: year,
+      text: text,
+      url: url,
+    };
+    res.push(newEvent);
+  });
 }
