@@ -28,25 +28,37 @@ const Home: React.FC = () => {
   }, [access_token]);
 
   return (
-    <div>
+    <div className="bg-gradient-to-br from-blue-700 via-purple-600 to-pink-500 h-screen">
       {!access_token && (
-        <a href={process.env.REACT_APP_BACKEND_ADDR + "/login"}>
-          <button>LOGIN TO SPOTIFY</button>
-        </a>
+        <div className="px-44">
+          <h2 className="animate-rise font-sans text-white text-4xl text-center">
+            Before we continue, we need you to sign into spotify
+          </h2>
+          <br />
+          <div className="flex items-center justify-center animate-slowrise">
+            <a href={process.env.REACT_APP_BACKEND_ADDR + "/login"}>
+              <button className="border-2 border-black rounded-full bg-white text-2xl px-6 py-2 font-sans">
+                <p className="font-sans">LOGIN TO SPOTIFY</p>
+              </button>
+            </a>
+          </div>
+        </div>
       )}
       <div>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchResults([]);
-              setSearchTerm(e.target.value);
-            }}
-          />
-          <h1>{name}</h1>
-          <button type="submit">Look Up</button>
-        </form>
+        {access_token && (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchResults([]);
+                setSearchTerm(e.target.value);
+              }}
+            />
+            <p>{name}</p>
+            <button type="submit">Look Up</button>
+          </form>
+        )}
       </div>
       {searchResults && (
         <ul>
